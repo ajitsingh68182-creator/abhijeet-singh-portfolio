@@ -1,0 +1,9 @@
+﻿node_modules/
+.next/
+.env*
+!.env.example
+
+# Large portfolio videos
+public/videos/*.mp4
+
+.git-backup/
