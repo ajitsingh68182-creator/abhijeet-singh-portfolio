@@ -77,12 +77,72 @@ export const creatorInfo: CreatorInfo = {
   ],
   driveFolders: [
     {
-      label: "Full Video Archive",
+      label: "Real Estate Reels",
+      description: "Property tours, 2BHK/3BHK walkthroughs, luxury apartments, and commercial real estate reels.",
+      url: "https://drive.google.com/drive/folders/1CYiY7zjUvtlzgT8L180JqagZJXuiVAdH?usp=drive_link",
+    },
+    {
+      label: "Motion Graphics",
+      description: "After Effects animations, kinetic typography, dynamic intro sequences, and visual effects.",
+      url: "https://drive.google.com/drive/folders/1nnsIXiO-sUBD2tqoxKzz4gbZgapBzRpJ?usp=drive_link",
+    },
+    {
+      label: "Makeup Reels",
+      description: "Bridal makeup transformations, beauty looks, speed edits, and high-energy social reels.",
+      url: "https://drive.google.com/drive/folders/1N1dKvG8ZNE9PKg34zGraACkiX96rLvN_?usp=drive_link",
+    },
+    {
+      label: "Influencer Reels",
+      description: "Personal branding, lifestyle storytelling, retention-focused edits, and creator content.",
+      url: "https://drive.google.com/drive/folders/1PdSOM291Fh9hVNh1StMWb0LXWyEBkb-p?usp=drive_link",
+    },
+    {
+      label: "Fashion Reels",
+      description: "Fashion teasers, apparel showcases, modeling shoots, and editorial lookbooks.",
+      url: "https://drive.google.com/drive/folders/1Z6QKTU7ULOiIQu9ZUN901wBfopURyO82?usp=drive_link",
+    },
+    {
+      label: "Dress Reels",
+      description: "Ethnic wear, bridal dresses, boutique fashion displays, and styling reel edits.",
+      url: "https://drive.google.com/drive/folders/1LKEnh3XCD6kfoeeixHQBLLrqPSz04fhq?usp=drive_link",
+    },
+    {
+      label: "DJ Reels",
+      description: "Live DJ events, nightclub performances, festival energy, and heavy bass beat-syncs.",
+      url: "https://drive.google.com/drive/folders/1OGAntpwf77GtVjHRbnCFiG7PN2x5Q2Hi?usp=drive_link",
+    },
+    {
+      label: "Birthday Reels",
+      description: "Birthday parties, family milestone celebrations, and personalized event highlight reels.",
+      url: "https://drive.google.com/drive/folders/1SBT1poor35Rm60fw6Hv3sM7oGqfHXfVn?usp=drive_link",
+    },
+    {
+      label: "YouTube Videos",
+      description: "16:9 widescreen long-form YouTube edits, podcasts, and narrative storytelling.",
+      url: "https://drive.google.com/drive/folders/1KKOHo_tpqcAsf5hg7-klX2hbl3kwG2x-?usp=drive_link",
+    },
+    {
+      label: "Wedding Videos",
+      description: "Cinematic wedding films, Haldi, Mehendi, Sangeet, and Ring Ceremony highlights.",
+      url: "https://drive.google.com/drive/folders/1aSP4OHXT9icpXseVwMWH_XgvwxYh-o_9?usp=drive_link",
+    },
+    {
+      label: "Railway Videos",
+      description: "Cinematic 4K/1080p Indian Railways infrastructure documentaries and route journeys.",
+      url: "https://drive.google.com/drive/folders/1m1XnOD-L9A5NJuy3wSWWEalYviknlihc?usp=drive_link",
+    },
+    {
+      label: "Anniversary Videos",
+      description: "25th Anniversary celebrations, couple documentaries, and emotional speech synchronizations.",
+      url: "https://drive.google.com/drive/folders/1tVeKBD57e6ZWrp80jYh8pmf1dDLdsfWI?usp=drive_link",
+    },
+    {
+      label: "General Archive 1 (Full Videos)",
       description: "Full Wedding Films, Anniversaries, Railway Documentaries & Long-form YouTube Content",
       url: "https://drive.google.com/drive/folders/1tHRI2a1mw0DwtTngDfxXSjX-O_s1FbRk?usp=drive_link",
     },
     {
-      label: "Reels & Short-Form Archive",
+      label: "General Archive 2 (Short Reels)",
       description: "Social Media Reels, Real Estate Showcases, Fashion, Makeup, Birthday & Motion Graphics",
       url: "https://drive.google.com/drive/folders/1c7lvq_tY9-iA5wwjL2s_qu5BRPgu-6Rn?usp=drive_link",
     },

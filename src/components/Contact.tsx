@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { creatorInfo } from "@/data/creatorInfo";
 import {
   Mail,
@@ -60,8 +61,6 @@ export default function Contact() {
     );
 
     const mailtoUrl = `mailto:${creatorInfo.email}?subject=${subject}&body=${body}`;
-
-    // Open mail client
     window.location.href = mailtoUrl;
     setSubmitted(true);
   };
@@ -70,45 +69,58 @@ export default function Contact() {
     navigator.clipboard.writeText(text);
     if (type === "email") {
       setCopiedEmail(true);
-      setTimeout(() => setCopiedEmail(false), 2500);
+      setTimeout(() => setCopiedEmail(false), 2000);
     } else {
       setCopiedPhone(true);
-      setTimeout(() => setCopiedPhone(false), 2500);
+      setTimeout(() => setCopiedPhone(false), 2000);
     }
   };
 
   return (
     <section id="contact" className="py-24 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#171717]">
       {/* Section Header */}
-      <div className="flex items-center gap-3 mb-4">
-        <span className="font-mono text-xs text-[#C6FF3D] tracking-widest uppercase">
-          09 / LET’S CONNECT
-        </span>
-        <div className="h-[1px] w-12 bg-[#C6FF3D]/40" />
-      </div>
-
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-        <div>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-[#F5F3EF] leading-tight">
-            HAVE A STORY? <br className="hidden sm:inline" />
-            <span className="text-[#C6FF3D]">LET’S CREATE IT.</span>
-          </h2>
-          <p className="text-sm md:text-base text-[#A3A3A3] max-w-xl font-normal leading-relaxed mt-4">
-            Have a wedding film, brand video, social media project, or creative idea in mind? Let’s discuss how I can bring it to life.
-          </p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <span className="font-mono text-xs text-[#C6FF3D] tracking-widest uppercase">
+            09 / LET’S CONNECT
+          </span>
+          <div className="h-[1px] w-12 bg-[#C6FF3D]/40" />
         </div>
 
-        {/* Status Indicator */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#141414] border border-[#2B2B2B] text-xs font-mono text-[#F5F3EF] shrink-0">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#C6FF3D] animate-ping" />
-          <span>Accepting New Clients</span>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <div>
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-[#F5F3EF] leading-tight">
+              HAVE A STORY? <br className="hidden sm:inline" />
+              <span className="text-[#C6FF3D]">LET’S CREATE IT.</span>
+            </h2>
+            <p className="text-sm md:text-base text-[#A3A3A3] max-w-xl font-normal leading-relaxed mt-4">
+              Have a wedding film, brand video, social media project, or creative idea in mind? Let’s discuss how I can bring it to life.
+            </p>
+          </div>
+
+          {/* Status Indicator */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#141414] border border-[#2B2B2B] text-xs font-mono text-[#F5F3EF] shrink-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C6FF3D] animate-ping" />
+            <span>Accepting New Clients</span>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Two Column Layout: Direct Contact on Left, Interactive Form on Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         {/* Left Column: Direct Contact CTAs & Information */}
-        <div className="lg:col-span-5 space-y-6">
+        <motion.div
+          initial={{ opacity: 0, x: -25 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-5 space-y-6"
+        >
           <div className="p-8 rounded-3xl bg-[#111111] border border-[#222222] space-y-6">
             <span className="font-mono text-xs uppercase tracking-widest text-[#737373] block">
               Direct Channels
@@ -161,42 +173,30 @@ export default function Contact() {
 
               <button
                 type="button"
-                onClick={() => copyToClipboard(creatorInfo.phoneFormatted, "phone")}
+                onClick={() => copyToClipboard(creatorInfo.phone, "phone")}
                 className="p-2 rounded-xl bg-[#222222] hover:bg-[#333333] text-[#A3A3A3] hover:text-white transition-colors"
-                title="Copy phone to clipboard"
-                aria-label="Copy phone to clipboard"
+                title="Copy phone number to clipboard"
+                aria-label="Copy phone number to clipboard"
               >
                 {copiedPhone ? <Check className="w-4 h-4 text-[#C6FF3D]" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
 
-            {/* Direct WhatsApp CTA */}
+            {/* Direct WhatsApp Button */}
             <a
               href={creatorInfo.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between p-4 rounded-2xl bg-[#005c4b]/30 border border-[#00a884]/40 hover:bg-[#005c4b]/50 hover:border-[#00a884] transition-all group"
+              className="w-full py-4 rounded-2xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 text-[#25D366] font-display font-semibold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 group"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#00a884] text-white flex items-center justify-center shrink-0">
-                  <MessageSquare className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono text-[#00a884] uppercase font-bold block">
-                    Instant Messaging
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-white">
-                    Chat on WhatsApp
-                  </span>
-                </div>
-              </div>
-
-              <ExternalLink className="w-4 h-4 text-[#00a884] group-hover:translate-x-0.5 transition-transform" />
+              <MessageSquare className="w-4 h-4 fill-current" />
+              <span>Chat on WhatsApp Directly</span>
+              <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </a>
           </div>
 
-          {/* Quick SLA info */}
-          <div className="p-6 rounded-3xl bg-[#0E0E0E] border border-[#222222] space-y-2 text-xs font-mono text-[#737373]">
+          {/* Quick FAQ / Guidance */}
+          <div className="p-6 rounded-3xl bg-[#0F0F0F] border border-[#1A1A1A] space-y-2 text-xs font-mono">
             <div className="flex items-center gap-2 text-[#C6FF3D]">
               <Sparkles className="w-4 h-4" />
               <span className="font-bold">RESPONSE TIME</span>
@@ -205,10 +205,16 @@ export default function Contact() {
               Inquiries are typically answered within 2 to 4 business hours. Files and project links can be shared directly via Google Drive.
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Right Column: Project Inquiry Form */}
-        <div className="lg:col-span-7">
+        <motion.div
+          initial={{ opacity: 0, x: 25 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-7"
+        >
           <form
             onSubmit={handleSubmit}
             className="p-8 sm:p-10 rounded-3xl bg-[#111111] border border-[#222222] space-y-6"
@@ -344,7 +350,7 @@ export default function Contact() {
               </div>
             )}
           </form>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { creatorInfo } from "@/data/creatorInfo";
 import {
   Film,
@@ -29,23 +30,30 @@ export default function Services() {
   return (
     <section id="services" className="py-24 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#171717]">
       {/* Section Header */}
-      <div className="flex items-center gap-3 mb-4">
-        <span className="font-mono text-xs text-[#C6FF3D] tracking-widest uppercase">
-          04 / WHAT I DO
-        </span>
-        <div className="h-[1px] w-12 bg-[#C6FF3D]/40" />
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <span className="font-mono text-xs text-[#C6FF3D] tracking-widest uppercase">
+            04 / WHAT I DO
+          </span>
+          <div className="h-[1px] w-12 bg-[#C6FF3D]/40" />
+        </div>
 
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-        <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-[#F5F3EF] leading-tight">
-          FROM RAW FOOTAGE <br className="hidden sm:inline" />
-          <span className="text-[#C6FF3D]">TO FINAL CUT.</span>
-        </h2>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-[#F5F3EF] leading-tight">
+            FROM RAW FOOTAGE <br className="hidden sm:inline" />
+            <span className="text-[#C6FF3D]">TO FINAL CUT.</span>
+          </h2>
 
-        <p className="text-sm md:text-base text-[#A3A3A3] max-w-md font-normal leading-relaxed">
-          Comprehensive post-production tailored to your platform, your aesthetic, and your audience engagement goals.
-        </p>
-      </div>
+          <p className="text-sm md:text-base text-[#A3A3A3] max-w-md font-normal leading-relaxed">
+            Comprehensive post-production tailored to your platform, your aesthetic, and your audience engagement goals.
+          </p>
+        </div>
+      </motion.div>
 
       {/* Services Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -53,8 +61,16 @@ export default function Services() {
           const Icon = iconMap[service.icon] || Film;
 
           return (
-            <div
+            <motion.div
               key={service.id}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{
+                duration: 0.55,
+                delay: Math.min((index % 4) * 0.08, 0.32),
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="group relative rounded-3xl p-7 bg-[#111111] border border-[#222222] hover:border-[#C6FF3D]/60 hover:bg-[#141414] transition-all duration-300 flex flex-col justify-between hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
             >
               {/* Card Header */}
@@ -102,7 +118,7 @@ export default function Services() {
                 <span>INQUIRE SERVICE</span>
                 <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
-            </div>
+            </motion.div>
           );
         })}
       </div>

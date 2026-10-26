@@ -84,19 +84,20 @@ export default function Footer() {
           {/* Drive Portfolio Folders */}
           <div className="space-y-3">
             <span className="text-white uppercase tracking-wider font-bold block">
-              Drive Archives
+              Drive Repositories ({creatorInfo.driveFolders.length})
             </span>
-            <ul className="space-y-2">
-              {creatorInfo.driveFolders.map((folder, i) => (
+            <ul className="space-y-2 max-h-48 overflow-y-auto pr-2 scrollbar-none">
+              {creatorInfo.driveFolders.map((folder) => (
                 <li key={folder.url}>
                   <a
                     href={folder.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-[#C6FF3D] transition-colors flex items-center gap-1.5"
+                    className="hover:text-[#C6FF3D] transition-colors flex items-center gap-1.5 truncate"
+                    title={folder.description}
                   >
-                    <FolderOpen className="w-3 h-3 text-[#C6FF3D]" />
-                    <span>Archive 0{i + 1}: {folder.label}</span>
+                    <FolderOpen className="w-3 h-3 text-[#C6FF3D] shrink-0" />
+                    <span className="truncate">{folder.label}</span>
                   </a>
                 </li>
               ))}

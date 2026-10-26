@@ -1,196 +1,98 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
-import Image from "next/image";
-import { portfolioProjects, projectCategories, ProjectItem } from "@/data/projectsData";
-import { creatorInfo } from "@/data/creatorInfo";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { portfolioProjects, projectCategories, googleDriveFolders, ProjectItem } from "@/data/projectsData";
 import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
   ExternalLink,
-  Film,
   FolderOpen,
   Video,
   Search,
-  Sparkles,
   ChevronDown,
+  Layers,
+  Sparkles,
+  X,
+  Filter,
 } from "lucide-react";
 import VideoModal from "./VideoModal";
+import PortfolioVideoPlayer from "./PortfolioVideoPlayer";
 
-function VideoCardItem({
+function ProjectCard({
   project,
+  index,
   onOpenModal,
 }: {
   project: ProjectItem;
+  index: number;
   onOpenModal: (p: ProjectItem) => void;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-
-  // Play video on hover or when in viewport
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (isHovered) {
-      video.play().then(() => setIsPlaying(true)).catch(() => {});
-    } else {
-      video.pause();
-      setIsPlaying(false);
-    }
-  }, [isHovered]);
-
-  const toggleSound = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const video = videoRef.current;
-    if (!video) return;
-    const nextState = !isMuted;
-    video.muted = nextState;
-    setIsMuted(nextState);
-    if (!nextState) {
-      video.play().catch(() => {});
-      setIsPlaying(true);
-    }
-  };
-
-  const togglePlayPause = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      video.play();
-      setIsPlaying(true);
-    } else {
-      video.pause();
-      setIsPlaying(false);
-    }
-  };
-
   const isLandscape = project.aspectRatio === "16/9";
 
   return (
-    <div
-      ref={cardRef}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`group relative rounded-3xl overflow-hidden border border-[#222222] bg-[#111111] hover:border-[#C6FF3D]/60 transition-all duration-300 flex flex-col justify-between hover:shadow-[0_15px_35px_rgba(0,0,0,0.6)] ${
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{
+        duration: 0.55,
+        delay: Math.min((index % 6) * 0.07, 0.35),
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={`group relative rounded-3xl overflow-hidden border border-[#222222] bg-[#111111] hover:border-[#C6FF3D]/60 transition-colors duration-300 flex flex-col justify-between hover:shadow-[0_15px_35px_rgba(0,0,0,0.6)] ${
         isLandscape ? "md:col-span-2 lg:col-span-2" : "col-span-1"
-      }`}
+      } cv-defer-card`}
     >
-      {/* Video Media Container with ACTUAL Video Frame Preview */}
-      <div
-        className={`relative w-full ${
-          isLandscape ? "aspect-[16/9]" : "aspect-[9/13] sm:aspect-[9/14]"
-        } overflow-hidden bg-[#0A0A0A] flex items-center justify-center cursor-pointer`}
-        onClick={() => onOpenModal(project)}
-      >
-        {/* Actual Video Frame Thumbnail Image (Unique to each project) */}
-        <Image
-          src={project.thumbnail}
-          alt={`Actual preview of ${project.title}`}
-          fill
-          sizes={isLandscape ? "(max-width: 768px) 100vw, 800px" : "(max-width: 768px) 100vw, 400px"}
-          className={`object-cover transition-all duration-700 ease-out group-hover:scale-105 ${
-            isPlaying ? "opacity-0" : "opacity-100"
-          }`}
-        />
+      {/* Reusable Viewport-Driven Video Player with Zero-Black-Frame Poster */}
+      <PortfolioVideoPlayer
+        project={project}
+        onOpenModal={onOpenModal}
+        autoplayOnScroll={true}
+        priority={index < 4}
+        objectFit="cover"
+      />
 
-        {/* Real HTML5 Video element that plays on hover/interaction */}
-        <video
-          ref={videoRef}
-          src={project.videoSrc}
-          poster={project.thumbnail}
-          loop
-          muted={isMuted}
-          playsInline
-          preload="none"
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
-            isPlaying ? "opacity-100" : "opacity-0"
-          }`}
-        />
-
-        {/* Ambient Overlay Vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#080808]/90 via-transparent to-black/30 pointer-events-none" />
-
-        {/* Top Controls & Badges */}
-        <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-20">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] tracking-widest text-[#C6FF3D] bg-black/75 px-2.5 py-1 rounded-full backdrop-blur-md border border-white/10 flex items-center gap-1.5">
-              <span className={`w-1.5 h-1.5 rounded-full bg-[#C6FF3D] ${isPlaying ? "animate-ping" : ""}`} />
-              {isPlaying ? "PLAYING" : "PREVIEW"}
+      {/* Card Editorial Content */}
+      <div className="p-6 bg-[#111111] border-t border-[#1A1A1A] flex flex-col justify-between flex-grow">
+        <div>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-[#C6FF3D] bg-[#C6FF3D]/10 px-2 py-0.5 rounded-full border border-[#C6FF3D]/20">
+              {project.category}
             </span>
-            <span className="font-mono text-[10px] text-[#A3A3A3] bg-black/75 px-2.5 py-1 rounded-full backdrop-blur-md border border-white/5 hidden sm:inline">
+            <span className="font-mono text-[10px] text-[#737373]">
               {project.format}
             </span>
           </div>
 
-          {/* Audio Mute / Unmute Button */}
-          <button
-            type="button"
-            onClick={toggleSound}
-            className={`p-2 rounded-full backdrop-blur-md border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C6FF3D] ${
-              isMuted
-                ? "bg-black/75 text-[#A3A3A3] border-white/10 hover:text-white hover:border-[#C6FF3D]"
-                : "bg-[#C6FF3D] text-[#080808] border-[#C6FF3D] shadow-[0_0_12px_#C6FF3D]"
-            }`}
-            title={isMuted ? "Click to unmute sound" : "Sound on (click to mute)"}
-            aria-label={isMuted ? "Unmute video sound" : "Mute video sound"}
-          >
-            {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-          </button>
-        </div>
-
-        {/* Center Hover Play/Pause & Expand Actions */}
-        <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 z-20 backdrop-blur-[1px]">
-          <button
-            type="button"
-            onClick={togglePlayPause}
-            className="w-12 h-12 rounded-full bg-black/80 border border-white/20 text-white flex items-center justify-center hover:border-[#C6FF3D] hover:text-[#C6FF3D] transition-all transform scale-90 group-hover:scale-100 shadow-xl"
-            title={isPlaying ? "Pause video" : "Play preview"}
-            aria-label={isPlaying ? "Pause video" : "Play preview"}
-          >
-            {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
-          </button>
-
-          <button
-            type="button"
+          <h3
             onClick={() => onOpenModal(project)}
-            className="w-12 h-12 rounded-full bg-[#C6FF3D] text-[#080808] flex items-center justify-center font-bold shadow-[0_0_20px_rgba(198,255,61,0.5)] transform scale-90 group-hover:scale-100 transition-all hover:bg-[#d4ff5e]"
-            title="Expand to full modal video viewer"
-            aria-label={`Expand ${project.title}`}
+            className="font-display font-bold text-lg text-[#F5F3EF] group-hover:text-[#C6FF3D] transition-colors leading-snug mb-1 cursor-pointer"
           >
-            <Play className="w-5 h-5 fill-current ml-0.5" />
-          </button>
-        </div>
-
-        {/* Bottom Audio / Status HUD */}
-        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[10px] font-mono pointer-events-none z-20">
-          <div className="flex items-center gap-1.5 text-[#A3A3A3] bg-black/60 px-2 py-0.5 rounded backdrop-blur-sm border border-white/5">
-            <span className="w-1 h-1 rounded-full bg-[#C6FF3D]" />
-            <span>{isPlaying ? (isMuted ? "MUTED LOOP" : "SOUND ON") : "ACTUAL PREVIEW"}</span>
-          </div>
-
-          <span className="text-[#737373] bg-black/60 px-2 py-0.5 rounded backdrop-blur-sm border border-white/5">
-            {project.category}
-          </span>
-        </div>
-      </div>
-
-      {/* Card Metadata Content */}
-      <div className="p-6 bg-[#111111] border-t border-[#1A1A1A] flex flex-col justify-between flex-grow">
-        <div>
-          <h3 className="font-display font-bold text-lg text-[#F5F3EF] group-hover:text-[#C6FF3D] transition-colors leading-snug mb-2">
             {project.title}
           </h3>
+
+          {project.originalFilename && project.originalFilename !== project.title && (
+            <p className="font-mono text-[10px] text-[#555555] truncate mb-3">
+              File: {project.originalFilename}
+            </p>
+          )}
 
           <p className="text-xs text-[#A3A3A3] line-clamp-2 leading-relaxed mb-4">
             {project.description}
           </p>
+
+          {/* Tags */}
+          {project.tags && project.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="font-mono text-[10px] text-[#737373] bg-[#171717] px-2 py-0.5 rounded border border-[#242424]"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Card Footer Actions */}
@@ -198,7 +100,7 @@ function VideoCardItem({
           <button
             type="button"
             onClick={() => onOpenModal(project)}
-            className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-[#C6FF3D] hover:underline"
+            className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-[#C6FF3D] hover:underline focus:outline-none focus-visible:ring-1 focus-visible:ring-[#C6FF3D]"
           >
             <Video className="w-3.5 h-3.5" />
             <span>WATCH PROJECT</span>
@@ -216,7 +118,7 @@ function VideoCardItem({
           </a>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -225,6 +127,7 @@ export default function FeaturedProjects() {
   const [searchQuery, setSearchQuery] = useState("");
   const [displayCount, setDisplayCount] = useState(18);
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+  const [showFolderDrawer, setShowFolderDrawer] = useState(false);
 
   // Filter projects by category and search
   const filteredProjects = useMemo(() => {
@@ -234,6 +137,8 @@ export default function FeaturedProjects() {
       const matchesSearch =
         searchQuery.trim() === "" ||
         project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (project.originalFilename &&
+          project.originalFilename.toLowerCase().includes(searchQuery.toLowerCase())) ||
         project.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
         project.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
 
@@ -253,14 +158,26 @@ export default function FeaturedProjects() {
     searchQuery.trim() === "" &&
     displayCount < filteredProjects.length;
 
+  // Active Category Folder Link
+  const currentCategoryFolder = useMemo(() => {
+    if (activeCategory === "all") return null;
+    return googleDriveFolders.find((f) => f.categorySlug === activeCategory);
+  }, [activeCategory]);
+
   return (
     <section id="work" className="py-24 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-t border-[#171717]">
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10"
+      >
         <div>
           <div className="flex items-center gap-3 mb-4">
             <span className="font-mono text-xs text-[#C6FF3D] tracking-widest uppercase">
-              02 / SELECTED WORK ({portfolioProjects.length} VIDEOS)
+              02 / SELECTED WORK ({portfolioProjects.length} VERIFIED VIDEOS ACROSS 14 DRIVE FOLDERS)
             </span>
             <div className="h-[1px] w-12 bg-[#C6FF3D]/40" />
           </div>
@@ -271,34 +188,115 @@ export default function FeaturedProjects() {
           </h2>
         </div>
 
-        {/* Drive Archive Links Pill */}
+        {/* 14 Folders Directory Action Pill */}
         <div className="flex flex-wrap items-center gap-2">
-          {creatorInfo.driveFolders.map((folder, idx) => (
+          {currentCategoryFolder && (
             <a
-              key={folder.url}
-              href={folder.url}
+              href={currentCategoryFolder.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#141414] border border-[#262626] text-xs font-mono text-[#A3A3A3] hover:text-[#C6FF3D] hover:border-[#C6FF3D] transition-colors"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#C6FF3D]/10 border border-[#C6FF3D]/40 text-xs font-mono text-[#C6FF3D] hover:bg-[#C6FF3D] hover:text-[#080808] transition-colors"
             >
-              <FolderOpen className="w-3.5 h-3.5 text-[#C6FF3D]" />
-              <span>Drive Folder {idx + 1}: {folder.label}</span>
+              <FolderOpen className="w-3.5 h-3.5" />
+              <span>Drive: {currentCategoryFolder.name} ({currentCategoryFolder.itemCount || 0})</span>
               <ExternalLink className="w-3 h-3 ml-0.5" />
             </a>
-          ))}
+          )}
+
+          <button
+            type="button"
+            onClick={() => setShowFolderDrawer(!showFolderDrawer)}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#141414] border border-[#262626] text-xs font-mono text-[#A3A3A3] hover:text-[#C6FF3D] hover:border-[#C6FF3D] transition-colors"
+          >
+            <Layers className="w-3.5 h-3.5 text-[#C6FF3D]" />
+            <span>Explore All 14 Drive Folders</span>
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showFolderDrawer ? "rotate-180" : ""}`} />
+          </button>
         </div>
-      </div>
+      </motion.div>
+
+      {/* Expandable 14 Google Drive Folders Directory */}
+      <AnimatePresence>
+        {showFolderDrawer && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-10 overflow-hidden"
+          >
+            <div className="p-6 rounded-3xl bg-[#0D0D0D] border border-[#222222] shadow-2xl">
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#1C1C1C]">
+                <div className="flex items-center gap-2">
+                  <FolderOpen className="w-4 h-4 text-[#C6FF3D]" />
+                  <span className="font-mono text-xs font-bold text-[#F5F3EF] uppercase tracking-wider">
+                    All 14 Connected Google Drive Folders (Live Source Repositories)
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowFolderDrawer(false)}
+                  className="p-1 rounded-lg text-[#737373] hover:text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {googleDriveFolders.map((folder, idx) => (
+                  <a
+                    key={folder.id}
+                    href={folder.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3.5 rounded-2xl bg-[#121212] border border-[#222222] hover:border-[#C6FF3D]/60 hover:bg-[#161616] transition-all group flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="font-mono text-[10px] text-[#C6FF3D] uppercase">
+                          {idx + 1}. {folder.category}
+                        </span>
+                        {folder.itemCount !== undefined && (
+                          <span className="font-mono text-[10px] text-[#737373] bg-[#1A1A1A] px-2 py-0.5 rounded-full">
+                            {folder.itemCount} files
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="font-display font-semibold text-xs text-[#F5F3EF] group-hover:text-white truncate">
+                        {folder.name}
+                      </h4>
+                      <p className="text-[11px] text-[#737373] line-clamp-1 mt-1">
+                        {folder.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-3 pt-2 border-t border-[#1C1C1C] flex items-center justify-between text-[10px] font-mono text-[#737373] group-hover:text-[#C6FF3D]">
+                      <span>Open on Drive</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Auto-Play Notice Banner */}
-      <div className="mb-8 p-3.5 rounded-2xl bg-[#141414] border border-[#222222] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono text-[#A3A3A3]">
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="mb-8 p-3.5 rounded-2xl bg-[#141414] border border-[#222222] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono text-[#A3A3A3]"
+      >
         <div className="flex items-center gap-2.5">
           <span className="w-2 h-2 rounded-full bg-[#C6FF3D] animate-pulse" />
           <span className="text-[#F5F3EF]">
-            Each video displays its own verified frame preview from Google Drive. Hover any card to play preview in loop.
+            All {portfolioProjects.length} videos from your 14 Google Drive folders integrated with verified frame previews and smooth viewport auto-loop.
           </span>
         </div>
-        <span className="text-[#737373]">Click to expand full original master in modal</span>
-      </div>
+        <span className="text-[#737373]">Click any card to open full-screen video viewer</span>
+      </motion.div>
 
       {/* Search Input Bar */}
       <div className="mb-8 relative max-w-md">
@@ -307,7 +305,7 @@ export default function FeaturedProjects() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={`Search all ${portfolioProjects.length} videos (e.g. Wedding, Rightland, 3 BHK, Makeup)...`}
+          placeholder={`Search all ${portfolioProjects.length} projects (e.g. Real Estate, Vrindavan, 25 Anniversary, Dolly)...`}
           className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[#121212] border border-[#262626] text-xs text-[#F5F3EF] placeholder-[#666666] focus:outline-none focus:border-[#C6FF3D] transition-colors"
         />
         {searchQuery && (
@@ -321,7 +319,7 @@ export default function FeaturedProjects() {
         )}
       </div>
 
-      {/* Category Filter Tabs */}
+      {/* Category Filter Tabs: Real Estate, Motion Graphics, Makeup, Influencer, Fashion, Dress, DJ, Birthday, YouTube, Wedding, Railway, Anniversary */}
       <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-12 scrollbar-none">
         {projectCategories.map((cat) => {
           const isActive = activeCategory === cat.id;
@@ -357,12 +355,36 @@ export default function FeaturedProjects() {
         })}
       </div>
 
-      {/* Editorial Grid with Real Distinct Previews */}
+      {/* Empty Search State */}
+      {visibleProjects.length === 0 && (
+        <div className="p-16 rounded-3xl bg-[#111111] border border-[#222222] text-center space-y-4 my-8">
+          <Filter className="w-8 h-8 text-[#737373] mx-auto" />
+          <h3 className="font-display font-bold text-xl text-[#F5F3EF]">
+            No videos matched &ldquo;{searchQuery}&rdquo;
+          </h3>
+          <p className="text-xs text-[#A3A3A3] max-w-sm mx-auto">
+            Try searching with broader terms or select a different category filter above.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setSearchQuery("");
+              setActiveCategory("all");
+            }}
+            className="px-5 py-2.5 rounded-full bg-[#C6FF3D] text-[#080808] font-mono text-xs font-bold"
+          >
+            Reset Filters
+          </button>
+        </div>
+      )}
+
+      {/* Editorial Grid with Viewport-Driven Video Players */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-        {visibleProjects.map((project) => (
-          <VideoCardItem
+        {visibleProjects.map((project, idx) => (
+          <ProjectCard
             key={project.id}
             project={project}
+            index={idx}
             onOpenModal={(p) => setSelectedProject(p)}
           />
         ))}
